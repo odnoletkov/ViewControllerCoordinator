@@ -65,12 +65,12 @@ class SampleCoordinator: ViewControllerCoordinator {
             configuration.selectionLimit = .max
             let pickerController = PHPickerViewController(configuration: configuration)
             pickerController.delegate = self
+
+            // Issue: Present called on controller: controller.present(pickerController, animated: true)
             self.present(pickerController, animated: true)
         }))
 
         present(alertController, animated: true)
-
-        // Issue: Wrong present: controller.present(alertController, animated: true)
 
         // Issue: Retain cycle: objc_setAssociatedObject(self, &key, alertController, .OBJC_ASSOCIATION_RETAIN)
     }
