@@ -35,8 +35,11 @@ open class ViewControllerCoordinator {
     }
 
     public func present(_ controller: UIViewController, animated: Bool) {
+        guard let presentingViewController else {
+            preconditionFailure("presentingViewController not set")
+        }
         objc_setAssociatedObject(controller, &key, self, .OBJC_ASSOCIATION_RETAIN)
-        presentingViewController!.present(controller, animated: animated)
+        presentingViewController.present(controller, animated: animated)
     }
 
     deinit {
@@ -53,7 +56,6 @@ class SampleCoordinator: ViewControllerCoordinator {
     }
 
     override func start(from controller: UIViewController) {
-        // Issue: Forget super call
         super.start(from: controller)
 
         let alertController = UIAlertController(title: title, message: nil, preferredStyle: .alert)
