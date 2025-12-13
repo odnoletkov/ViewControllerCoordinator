@@ -23,6 +23,8 @@ class AppDelegate: NSObject, UIApplicationDelegate {
     }
 }
 
+private var key = 0
+
 open class ViewControllerCoordinator {
 
     public private(set) var presentingViewController: UIViewController?
@@ -33,6 +35,7 @@ open class ViewControllerCoordinator {
     }
 
     public func present(_ controller: UIViewController, animated: Bool) {
+        objc_setAssociatedObject(controller, &key, self, .OBJC_ASSOCIATION_RETAIN)
         presentingViewController!.present(controller, animated: animated)
     }
 
@@ -56,7 +59,9 @@ class SampleCoordinator: ViewControllerCoordinator {
         let alertController = UIAlertController(title: title, message: nil, preferredStyle: .alert)
         alertController.addAction(.init(title: "Continue", style: .default, handler: { _ in
 
-            let pickerController = PHPickerViewController(configuration: .init(photoLibrary: .shared()))
+            var configuration = PHPickerConfiguration()
+            configuration.selectionLimit = .max
+            let pickerController = PHPickerViewController(configuration: configuration)
             pickerController.delegate = self
             self.present(pickerController, animated: true)
         }))
@@ -71,6 +76,7 @@ class SampleCoordinator: ViewControllerCoordinator {
 
 extension SampleCoordinator: PHPickerViewControllerDelegate {
     func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
-        print(#function)
+        print(#function, results)
+        picker.dismiss(animated: true)
     }
 }
